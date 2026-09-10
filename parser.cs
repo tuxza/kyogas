@@ -7,13 +7,14 @@ using Utils;
 using static System.Console;
 
 namespace Kiogas;
+
 public class Parser
 {
-    private bool inArr                     = false; // currently inside of an array
-    private bool inObj                     = false; // currently inside of an object
+    private bool inArr = false; // currently inside of an array
+    private bool inObj = false; // currently inside of an object
 
-    private Dictionary<string, Data> data  = new();
-    private List<string> names             = new();
+    private Dictionary<string, Data> data = new();
+    private List<string> names = new();
 
     private bool isDuplicate(string name)
     {
@@ -35,12 +36,12 @@ public class Parser
         return type switch
         {
             "byte" => IsIt.u8(val, ln),
-            "int"  => IsIt.Int(val, ln),
+            "int" => IsIt.Int(val, ln),
             "uint" => IsIt.positive(val, ln),
-            "flt"  => IsIt.flt(val, ln),
-            "str"  => IsIt.str(val, ln),
+            "flt" => IsIt.flt(val, ln),
+            "str" => IsIt.str(val, ln),
             "bool" => Helper.bools.Contains(val),
-            _      => true
+            _ => true
         };
     }
 
@@ -84,7 +85,7 @@ public class Parser
             }
 
             string[] _parts = line.Split(':', 2);
-            _parts[0]       = _parts[0].Trim();
+            _parts[0] = _parts[0].Trim();
 
             // debug
             // WriteLine($"debug | type: {type}");
@@ -125,7 +126,7 @@ public class Parser
                 val = Helper.escapeCheck(val, lineNum);
             }
 
-            bool isArrayType  = type.StartsWith("arr.");
+            bool isArrayType = type.StartsWith("arr.");
             bool isObjectType = (type == "obj");
 
             // tuxzilla wuz here, this makes it so types are always.. the types they should be
@@ -137,15 +138,15 @@ public class Parser
                 }
             }
 
-            data[name]        = new Data
+            data[name] = new Data
             {
-                Name    = name,
-                Value   = val,
-                Type    = type,
-                Array   = new List<object>(),
-                IsArr   = isArrayType,
-                Object  = new Dictionary<string, object>(),
-                IsObj   = isObjectType,
+                Name = name,
+                Value = val,
+                Type = type,
+                Array = new List<object>(),
+                IsArr = isArrayType,
+                Object = new Dictionary<string, object>(),
+                IsObj = isObjectType,
                 objType = null
             };
 
@@ -156,7 +157,7 @@ public class Parser
 
                 while (inArr && i < lines.Length)
                 {
-                    string arrLine  = lines[(int)i].Trim();
+                    string arrLine = lines[(int)i].Trim();
                     uint arrLineNum = i + 1;
 
                     if (arrLine == "->")
@@ -216,8 +217,9 @@ public class Parser
                 }
             }
 
-            if (isObjectType) {
-                inObj      = true;
+            if (isObjectType)
+            {
+                inObj = true;
                 int keyNum = 0;
                 i++;
 
@@ -233,7 +235,7 @@ public class Parser
                 while (inObj && i < lines.Length)
                 {
                     string objLine = lines[(int)i].Trim();
-                    uint objln     = i + 1;
+                    uint objln = i + 1;
 
                     if (objLine == "==>")
                     {
@@ -247,15 +249,16 @@ public class Parser
                         continue;
                     }
 
-                    if (!objLine.Contains(":")) {
+                    if (!objLine.Contains(":"))
+                    {
                         WriteLine($"obj.missingColon [{objLine}]: Missing colon.");
                         i++;
                         break;
                     }
 
-                    string[] parts         = objLine.Split(':', 2);
-                    string key             = parts[0].Trim();
-                    string keyVal          = parts[1].Trim();
+                    string[] parts = objLine.Split(':', 2);
+                    string key = parts[0].Trim();
+                    string keyVal = parts[1].Trim();
 
                     data[name].Object[key] = keyVal;
 
@@ -265,15 +268,15 @@ public class Parser
 
                     if (t == "str" && keyVal.Contains("\\"))
                     {
-                        keyVal                 = Helper.unquote(keyVal, objln);
-                        keyVal																 = Helper.escapeCheck(keyVal, objln);
+                        keyVal = Helper.unquote(keyVal, objln);
+                        keyVal = Helper.escapeCheck(keyVal, objln);
                         // the Helper.escapeCheck returns .:ERR:.
                         // when something goes wrong
                         // so this just breaks out if 
                         // it sees that value
                         // - wer
                         if (keyVal == ".:ERR:.") break;
-                        
+
                         data[name].Object[key] = keyVal;
                     }
 
@@ -290,9 +293,9 @@ public class Parser
 
                 // debug
                 int j = 0; // what does this even do??? - Centurion
-                // it's a debug thing to print out
-                // object key/value pairs - wer
-                
+                           // it's a debug thing to print out
+                           // object key/value pairs - wer
+
                 foreach (var x in data[name].Object)
                 {
                     WriteLine("DEBUG:");
