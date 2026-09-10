@@ -8,12 +8,12 @@ namespace Utils;
 
 public static class Helper
 {
-    public static string[] types = { "int", "byte", "uint", "str", "bool", "arr", "flt", "obj" };
-    public static string[] bools = { "f", "t", "true", "false" };
-    public static string nums = "-1234567890";
-    public static string fltNums = "-1234567890.";
-    public static char[] strs = ['\'', '"',];
-    public static object boolify(string str)
+    public static string[] Types = { "int", "byte", "uint", "str", "bool", "arr", "flt", "obj" };
+    public static string[] Bools = { "f", "t", "true", "false" };
+    public static string Nums = "-1234567890";
+    public static string FltNums = "-1234567890.";
+    public static char[] Strs = ['\'', '"',];
+    public static object Boolify(string str)
     {
         switch (str)
         {
@@ -24,7 +24,7 @@ public static class Helper
             default: WriteLine($"bool.invalid: {str} is not a valid boolean"); return null;
         }
     }
-    public static string escapeCheck(string str, uint ln)
+    public static string EscapeCheck(string str, uint ln)
     {
         foreach (char c in str)
         {
@@ -42,10 +42,10 @@ public static class Helper
         }
         return str;
     }
-    public static string unquote(string str, uint ln)
+    public static string Unquote(string str, uint ln)
     {
         char first = str[0];
-        char last = str[str.Length - 1];
+        char last = str[^1];
         if (first == '"' && last == '"' || (first == '\'' && last == first))
         {
             return str[1..^1];
@@ -59,12 +59,12 @@ public static class Helper
         return str[1..^1];
 
     }
-    public static string getType(string str, uint ln)
+    public static string GetType(string str, uint ln)
     {
 
         string[] _temp = str.Split(' ', 2);
         string _type = _temp[0];
-        if (_type.StartsWith("arr<") && _type.EndsWith(">"))
+        if (_type.StartsWith("arr<") && _type.EndsWith('>'))
         {
             string subtype = _type.Split('<')[1];
             subtype = subtype[0..^1]; // to get rid of the closing '>'
@@ -79,21 +79,21 @@ public static class Helper
                 _ => ""
             };
         }
-        else if (_type.StartsWith("arr<") && !_type.EndsWith(">"))
+        else if (_type.StartsWith("arr<") && !_type.EndsWith('>'))
         {
             WriteLine($"type.arr.unclosed [{ln}]: Array type delcaration is missing the closing angle bracket ('>')");
             return "";
         }
-        else if (_type.StartsWith("arr.") && !_type.Contains("<") && _type.EndsWith(">"))
+        else if (_type.StartsWith("arr.") && !_type.Contains('<') && _type.EndsWith('>'))
         {
             WriteLine($"type.arr.unopened [{ln}]: Array type delcaration is missing the opening angle bracket ('<')");
             return "";
         }
-        if (str.Contains("<==") && str.LastIndexOf("=") == str.Length - 1 && str.StartsWith("obj ")) return "obj";
-        else if (Helper.types.Contains(_type)) return _type;
+        if (str.Contains("<==") && str.LastIndexOf('=') == str.Length - 1 && str.StartsWith("obj ")) return "obj";
+        else if (Helper.Types.Contains(_type)) return _type;
         else
         {
-            if (Helper.types.Contains(_type.ToLower()))
+            if (Helper.Types.Contains(_type.ToLower()))
             {
                 WriteLine($"type.similar [{ln}]: There is no such type '{_type}'. Did you mean {_type.ToLower()}?");
                 return "";
@@ -110,7 +110,7 @@ public static class IsIt
         uint i = 0;
         while (i < str.Length)
         {
-            if (Helper.nums.Contains(str[(int)i])) matches++;
+            if (Helper.Nums.Contains(str[(int)i])) matches++;
             i++;
         }
         if (str.Length == 1 && str[0] == '-')
@@ -135,13 +135,13 @@ public static class IsIt
         }
         return true;
     }
-    public static bool flt(string str, uint ln)
+    public static bool Flt(string str, uint ln)
     {
         uint matches = 0;
         uint i = 0;
         while (i < str.Length)
         {
-            if (Helper.fltNums.Contains(str[(int)i])) matches++;
+            if (Helper.FltNums.Contains(str[(int)i])) matches++;
             i++;
         }
         if (matches != str.Length || str.Count(c => c == '.') > 1)
@@ -149,9 +149,9 @@ public static class IsIt
             WriteLine($"flt.invalid [{ln}]: '{str}' is not a valid float.");
             return false;
         }
-        else if (str.Contains(".") && str.Count(c => c == '.') == 1)
+        else if (str.Contains('.') && str.Count(c => c == '.') == 1)
         {
-            int x = str.IndexOf(".") + 1;
+            int x = str.IndexOf('.') + 1;
             if (x == str.Length)
             {
                 WriteLine($"flt.invalid [{ln}]: '{str}' is not a valid float.");
@@ -165,7 +165,7 @@ public static class IsIt
         }
         return true;
     }
-    public static bool positive(string str, uint ln)
+    public static bool Positive(string str, uint ln)
     {
         if (str.Contains('-'))
         {
@@ -180,7 +180,7 @@ public static class IsIt
         }
         return true;
     }
-    public static bool u8(string str, uint ln)
+    public static bool U8(string str, uint ln)
     {
         if (string.IsNullOrWhiteSpace(str))
         {
@@ -205,12 +205,12 @@ public static class IsIt
         }
         return true;
     }
-    public static bool str(string str, uint ln)
+    public static bool Str(string str, uint ln)
     {
         str = str.Trim();
         char first = str[0];
         char last = str[str.Length - 1];
-        str = Helper.unquote(str, ln);
+        str = Helper.Unquote(str, ln);
         if (str == "") return false;
         else return true;
     }
@@ -225,5 +225,5 @@ public class Data
     public bool IsArr { get; set; }
     public Dictionary<string, object> Object { get; set; }
     public bool IsObj { get; set; }
-    public List<string> objType { get; set; }
+    public List<string> ObjType { get; set; }
 }
