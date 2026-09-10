@@ -209,7 +209,7 @@ public static class IsIt
     {
         str = str.Trim();
         char first = str[0];
-        char last = str[str.Length - 1];
+        char last = str[^1];
         str = Helper.Unquote(str, ln);
         if (str == "") return false;
         else return true;
